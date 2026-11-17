@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "name": "예시 집 · 84㎡ 3베이",
+  "prompt": "집 전체 예시(실제 단지가 아닌 흔한 판상형 3베이 구조를 어림한 것)",
+  "assumptions": [
+    "실제 단지의 평면도가 아니다. 전용 84㎡ 판상형 3베이에서 흔한 방 배치를 어림해 그렸다",
+    "바깥 치수 11.4×8.4m, 천장 2.3m, 방 사이 벽 두께 0.12m 는 가정",
+    "발코니는 확장한 것으로 보고 따로 그리지 않았다",
+    "방위: 거실 창이 있는 벽을 남쪽(S)으로 가정",
+    "가구와 조명은 전부 예시로 넣은 것"
+  ],
+  "style": "wood-minimal",
+  "environment": { "time": "15:00", "season": "spring", "view": "city", "elevation": 18 },
+  "room": { "w": 11.4, "d": 8.4, "h": 2.3, "floor": "@floor", "wall": "@wall", "ceiling": "@ceiling" },
+  "openings": [
+    { "type": "door", "wall": "N", "offset": 5.3, "width": 1.0, "height": 2.1, "hinge": "start", "swing": "in", "open": 0, "note": "현관문" },
+    { "type": "window", "wall": "N", "offset": 0.7, "width": 1.6, "height": 1.2, "sill": 0.9, "curtain": "none", "note": "작은방2" },
+    { "type": "window", "wall": "N", "offset": 8.2, "width": 1.8, "height": 0.9, "sill": 1.1, "curtain": "none", "note": "주방" },
+    { "type": "window", "wall": "S", "offset": 0.6, "width": 2.6, "height": 2.1, "sill": 0.05, "curtain": "blackout", "curtainColor": "linen-gray", "curtainOpen": 0.6, "note": "안방" },
+    { "type": "window", "wall": "S", "offset": 4.2, "width": 3.6, "height": 2.1, "sill": 0.05, "curtain": "sheer", "curtainOpen": 0.7, "note": "거실" },
+    { "type": "window", "wall": "S", "offset": 8.8, "width": 2.0, "height": 1.2, "sill": 0.9, "curtain": "none", "note": "작은방1" }
+  ],
+  "partitions": [
+    { "x0": 0, "z0": 3.6, "x1": 5.0, "z1": 3.6, "note": "작은방2·욕실의 남쪽 벽",
+      "openings": [
+        { "type": "door", "offset": 1.9, "width": 0.9, "swing": "N", "hinge": "end", "note": "작은방2 문" },
+        { "type": "door", "offset": 3.7, "width": 0.8, "swing": "N", "hinge": "start", "note": "욕실 문" }
+      ] },
+    { "x0": 3.0, "z0": 0, "x1": 3.0, "z1": 3.6, "note": "작은방2 | 욕실" },
+    { "x0": 5.0, "z0": 0, "x1": 5.0, "z1": 3.6, "note": "욕실 | 현관" },
+    { "x0": 6.6, "z0": 0, "x1": 6.6, "z1": 2.2, "note": "현관 | 주방(남쪽 1.4m 는 트여 있다)" },
+    { "x0": 0, "z0": 4.6, "x1": 3.8, "z1": 4.6, "note": "복도 | 안방",
+      "openings": [ { "type": "door", "offset": 2.7, "width": 0.9, "swing": "S", "hinge": "end", "note": "안방 문" } ] },
+    { "x0": 3.8, "z0": 4.6, "x1": 3.8, "z1": 8.4, "note": "안방 | 거실" },
+    { "x0": 8.2, "z0": 3.6, "x1": 8.2, "z1": 8.4, "note": "거실 | 작은방1",
+      "openings": [ { "type": "door", "offset": 0.25, "width": 0.9, "swing": "E", "hinge": "start", "note": "작은방1 문" } ] },
+    { "x0": 8.2, "z0": 3.6, "x1": 11.4, "z1": 3.6, "note": "주방 | 작은방1" }
+  ],
+  "areas": [
+    { "name": "거실", "x": 3.8, "z": 3.6, "w": 4.4, "d": 4.8, "yaw": 180 },
+    { "name": "주방", "x": 6.6, "z": 0, "w": 4.8, "d": 3.6, "yaw": 60 },
+    { "name": "안방", "x": 0, "z": 4.6, "w": 3.8, "d": 3.8, "yaw": 215 },
+    { "name": "작은방1", "x": 8.2, "z": 3.6, "w": 3.2, "d": 4.8, "yaw": 150 },
+    { "name": "작은방2", "x": 0, "z": 0, "w": 3.0, "d": 3.6, "yaw": 330 },
+    { "name": "욕실", "x": 3.0, "z": 0, "w": 2.0, "d": 3.6, "floor": "white-tile", "yaw": 0 },
+    { "name": "현관", "x": 5.0, "z": 0, "w": 1.6, "d": 1.5, "floor": { "type": "tile", "color": "#8d8a84", "scale": 0.3 }, "yaw": 180 }
+  ],
+  "furniture": [
+    { "type": "bed", "x": 1.035, "z": 6.9, "facing": "E", "w": 1.5, "d": 2.05, "note": "안방. 머리가 서쪽 벽" },
+    { "type": "nightstand", "x": 0.21, "z": 5.9, "facing": "E" },
+    { "type": "wardrobe", "x": 0.95, "z": 4.97, "facing": "S", "w": 1.8, "d": 0.6, "h": 2.2, "material": "white-laminate", "note": "안방 북쪽 벽" },
+    { "type": "sofa", "x": 4.31, "z": 6.6, "facing": "E", "material": "linen-beige", "note": "거실. 안방 쪽 벽에 붙임" },
+    { "type": "coffee-table", "x": 5.7, "z": 6.6, "facing": "E" },
+    { "type": "rug", "x": 5.9, "z": 6.6, "w": 2.2, "d": 1.6, "material": "ivory-carpet" },
+    { "type": "tv-stand", "x": 7.93, "z": 6.6, "facing": "W" },
+    { "type": "tv", "x": 7.95, "z": 6.6, "y": 0.45, "facing": "W" },
+    { "type": "plant", "x": 7.85, "z": 8.05 },
+    { "type": "box", "name": "싱크대", "x": 8.9, "z": 0.31, "facing": "S", "w": 2.6, "d": 0.6, "h": 0.88, "material": "white-laminate", "note": "주방 하부장 대신" },
+    { "type": "box", "name": "냉장고", "x": 10.9, "z": 0.4, "facing": "S", "w": 0.9, "d": 0.75, "h": 1.85, "material": "brushed-steel" },
+    { "type": "table", "x": 9.3, "z": 2.3, "facing": "S", "w": 1.4, "d": 0.8 },
+    { "type": "chair", "x": 9.0, "z": 1.6, "facing": "S" },
+    { "type": "chair", "x": 9.6, "z": 3.0, "facing": "N" },
+    { "type": "desk", "x": 11.04, "z": 6.2, "facing": "W", "w": 1.4, "d": 0.7, "note": "작은방1" },
+    { "type": "office-chair", "x": 10.25, "z": 6.2, "facing": "E" },
+    { "type": "monitor", "x": 11.15, "z": 6.2, "y": 0.73, "facing": "W" },
+    { "type": "bookcase", "x": 10.6, "z": 3.82, "facing": "S" },
+    { "type": "bed", "x": 0.51, "z": 1.2, "facing": "S", "w": 1.0, "d": 2.0, "note": "작은방2 싱글 침대" },
+    { "type": "drawer-unit", "x": 2.705, "z": 1.2, "facing": "W" },
+    { "type": "box", "name": "욕조", "x": 4.0, "z": 0.42, "facing": "S", "w": 1.7, "d": 0.7, "h": 0.55, "material": "white-laminate" },
+    { "type": "box", "name": "신발장", "x": 5.245, "z": 2.2, "facing": "E", "w": 1.2, "d": 0.35, "h": 2.0, "material": "white-laminate" }
+  ],
+  "lights": [
+    { "type": "ceiling", "x": 6.0, "z": 6.0, "lumens": 4500, "temp": 4000, "on": "auto", "note": "거실" },
+    { "type": "ceiling", "x": 9.0, "z": 1.8, "lumens": 3500, "temp": 4000, "on": "auto", "note": "주방" },
+    { "type": "ceiling", "x": 1.9, "z": 6.5, "lumens": 3500, "temp": 3500, "on": "auto", "note": "안방" },
+    { "type": "ceiling", "x": 9.8, "z": 6.0, "lumens": 3000, "temp": 4000, "on": "auto", "note": "작은방1" },
+    { "type": "ceiling", "x": 1.5, "z": 1.8, "lumens": 3000, "temp": 4000, "on": "auto", "note": "작은방2" },
+    { "type": "ceiling", "x": 4.0, "z": 1.8, "lumens": 1500, "temp": 4000, "on": "auto", "note": "욕실" },
+    { "type": "ceiling", "x": 5.8, "z": 1.6, "lumens": 1000, "temp": 3500, "on": "auto", "note": "현관" }
+  ],
+  "start": { "x": 5.8, "z": 3.0, "yaw": 180, "pitch": -6 },
+  "views": [
+    { "name": "living", "x": 7.6, "z": 4.2, "yaw": 215, "pitch": -8 },
+    { "name": "kitchen", "x": 7.3, "z": 3.2, "yaw": 55, "pitch": -6 },
+    { "name": "master", "x": 3.3, "z": 5.2, "yaw": 235, "pitch": -8 }
+  ]
+}

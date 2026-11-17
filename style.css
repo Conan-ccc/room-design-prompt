@@ -1,0 +1,168 @@
+html, body { margin: 0; height: 100%; background: #0b0b0c; overflow: hidden; }
+canvas { display: block; touch-action: none; }
+body > canvas { width: 100vw; height: 100vh; cursor: grab; }
+body > canvas:active { cursor: grabbing; }
+body.editing > canvas { cursor: default; }
+
+/* 글자: 폰트 파일 없이 시스템 글꼴. 얇고 자간을 준다 */
+.ui, .ui button, button.ui, .ui input, .ui select {
+  font: 300 13px/1.35 "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.8);
+}
+.ui { position: fixed; user-select: none; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); transition: opacity 0.35s; }
+.ui [hidden] { display: none !important; }
+.ui[hidden] { display: none !important; }
+body.bare .ui { opacity: 0; pointer-events: none; }
+
+.ui button, button.ui { background: none; border: 0; padding: 5px 0 6px; cursor: pointer; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s, background 0.2s; white-space: nowrap; }
+.ui button:hover { color: #fff; }
+.ui button.on { color: #fff; border-bottom-color: rgba(255, 255, 255, 0.85); }
+.ui button.solid { padding: 6px 14px 7px; border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 2px; color: #fff; }
+.ui button.solid:hover { background: rgba(255, 255, 255, 0.14); }
+.ui button.solid.on { background: rgba(255, 255, 255, 0.92); color: #111; text-shadow: none; border-color: transparent; }
+.seg { display: inline-flex; gap: 14px; align-items: center; }
+.cap { font-size: 11px; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.5); }
+.cap em { font-style: normal; margin-left: 8px; letter-spacing: 0.03em; color: rgba(255, 255, 255, 0.36); }
+
+.ui input, .ui select { background: none; border: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0; padding: 4px 0 5px; outline: none; color: #fff; min-width: 0; }
+.ui input:focus, .ui select:focus { border-bottom-color: #fff; }
+.ui input::placeholder { color: rgba(255, 255, 255, 0.36); font-size: 11px; letter-spacing: 0.02em; }
+.ui select { cursor: pointer; }
+.ui select option { background: #1b1b1d; color: #fff; }
+.ui input[type=number] { -moz-appearance: textfield; text-align: right; font-variant-numeric: tabular-nums; }
+.ui input[type=number]::-webkit-outer-spin-button, .ui input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ui input[type=range] { -webkit-appearance: none; appearance: none; height: 18px; padding: 0; border: 0; cursor: pointer; }
+.ui input[type=range]::-webkit-slider-runnable-track { height: 1px; background: rgba(255, 255, 255, 0.5); }
+.ui input[type=range]::-moz-range-track { height: 1px; background: rgba(255, 255, 255, 0.5); }
+.ui input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; margin-top: -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); }
+.ui input[type=range]::-moz-range-thumb { width: 11px; height: 11px; border: 0; border-radius: 50%; background: #fff; }
+
+.card { background: rgba(16, 16, 18, 0.62); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 4px; text-shadow: none; }
+
+/* 위 */
+#top { left: 28px; top: 22px; display: flex; align-items: baseline; gap: 14px; }
+#name { font-size: 14px; letter-spacing: 0.2em; color: #fff; }
+#name::after { content: ""; display: inline-block; margin: 0 0 2px 9px; border: 4px solid transparent; border-top: 5px solid rgba(255, 255, 255, 0.6); border-bottom: 0; }
+#saved { font-size: 11px; color: rgba(255, 255, 255, 0.5); opacity: 0; transition: opacity 0.4s; }
+#saved.show { opacity: 1; }
+#roomMenu { position: absolute; left: 0; top: 34px; width: 330px; padding: 16px 18px; display: grid; gap: 10px; }
+#roomList { display: grid; gap: 2px; max-height: 180px; overflow-y: auto; }
+#roomList button { text-align: left; padding: 5px 0; }
+#roomList button.on { border-bottom-color: transparent; }
+#roomList button.on::before { content: "· "; }
+#newRow { display: grid; grid-template-columns: 1fr 64px 64px auto; gap: 10px; align-items: end; }
+#hint { left: 50%; top: 24px; transform: translateX(-50%); max-width: min(56vw, 760px); text-align: center; font-size: 12px; color: rgba(255, 255, 255, 0.86); pointer-events: none;
+  padding: 5px 16px 6px; border-radius: 999px; background: rgba(16, 16, 18, 0.34); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); text-shadow: none; white-space: nowrap; }
+#hint:empty { display: none; }
+#hint kbd, #help kbd { font: inherit; font-size: 11px; padding: 1px 5px 2px; margin: 0 1px; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 3px; }
+#helpBtn { right: 28px; top: 20px; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+
+/* 아래 */
+#dock { left: 28px; right: 28px; bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; pointer-events: none; }
+#dock .grp { display: grid; gap: 7px; pointer-events: auto; }
+#dock .row { display: flex; align-items: center; gap: 18px; }
+#viewGrp { justify-items: end; }
+#areaRow { gap: 12px; align-items: flex-start; } #areaRow .cap { white-space: nowrap; flex: none; padding-top: 7px; } #areas { flex-wrap: wrap; justify-content: flex-end; max-width: 46vw; gap: 4px 14px; }
+#time { width: 48px; text-align: center; font-size: 14px; font-variant-numeric: tabular-nums; }
+#timeSlider { width: min(26vw, 320px); }
+
+/* 오른쪽 패널 */
+body.areas #panel { bottom: 132px; }
+#panel { right: 28px; top: 62px; bottom: 96px; width: 356px; box-sizing: border-box; padding: 14px 18px 12px; display: flex; flex-direction: column; gap: 12px; }
+#tabs { gap: 18px; padding-bottom: 2px; }
+#tabs #closePanel { margin-left: auto; font-size: 17px; color: rgba(255, 255, 255, 0.5); padding: 0 2px 2px; }
+#panel section { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; grid-template-columns: minmax(0, 1fr); scrollbar-gutter: stable; display: grid; gap: 11px; align-content: start; padding-right: 4px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; }
+#panel footer { display: flex; align-items: baseline; gap: 14px; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 8px; }
+#panel footer button { font-size: 12px; color: rgba(255, 255, 255, 0.65); }
+#selInfo { margin-left: auto; font-size: 11px; color: rgba(255, 255, 255, 0.45); text-align: right; }
+.note, .empty { margin: 0; font-size: 11.5px; line-height: 1.6; letter-spacing: 0.02em; color: rgba(255, 255, 255, 0.48); }
+
+/* 숫자 칸 */
+.nf { display: grid; gap: 3px; }
+.nf span { font-size: 10.5px; letter-spacing: 0.03em; color: rgba(255, 255, 255, 0.5); white-space: nowrap; }
+.nf input, .nf select { width: 100%; box-sizing: border-box; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.acts { display: flex; gap: 18px; }
+
+/* 가구 탭 */
+#furnSel { display: grid; gap: 10px; }
+#furnSel:empty { display: none; }
+#furnSel h2 { margin: 0; font: inherit; font-size: 14px; color: #fff; letter-spacing: 0.1em; }
+#addRow { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+#furnList { display: grid; gap: 1px; }
+#furnList button { display: flex; justify-content: space-between; gap: 10px; text-align: left; padding: 5px 0; }
+#furnList button span:last-child { font-size: 11px; color: rgba(255, 255, 255, 0.42); font-variant-numeric: tabular-nums; }
+#furnList button.on { border-bottom-color: rgba(255, 255, 255, 0.5); }
+
+/* 조명 탭 */
+.slide { display: grid; grid-template-columns: 70px 1fr 30px 14px; align-items: center; gap: 10px; }
+.slide .rm { color: rgba(255, 255, 255, 0.4); font-size: 15px; padding: 0 0 3px; }
+#curtainAdd { justify-self: start; }
+.slide output { text-align: right; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.55); }
+#lightList { display: grid; gap: 7px; }
+.light { display: grid; grid-template-columns: minmax(0, 1fr) 52px 14px 48px 10px 18px 36px 14px; align-items: center; gap: 6px; }
+.light.head { font-size: 10.5px; color: rgba(255, 255, 255, 0.42); letter-spacing: 0.02em; margin-bottom: -5px; }
+.light.head span { white-space: nowrap; text-align: right; }
+.light.off .nm { color: rgba(255, 255, 255, 0.42); }
+.light.sel .nm { color: #fff; border-bottom-color: rgba(255, 255, 255, 0.6); }
+.light .nm { text-align: left; }
+.light em { font-style: normal; font-size: 10px; color: rgba(255, 255, 255, 0.45); letter-spacing: 0; }
+.light .col { width: 16px; height: 16px; padding: 0; border: 0; cursor: pointer; }
+.light .col::-webkit-color-swatch-wrapper { padding: 0; }
+.light .col::-webkit-color-swatch { border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%; }
+.light .col::-moz-color-swatch { border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%; }
+.light .st { font-size: 12px; }
+.light .rm, .op .rm { color: rgba(255, 255, 255, 0.4); font-size: 15px; padding: 0 0 3px; }
+#adds, #roomAdds { display: flex; gap: 16px; align-items: center; }
+#roomAdds em { margin-left: auto; font-style: normal; font-size: 10.5px; color: rgba(255, 255, 255, 0.4); }
+
+/* 방 탭 */
+#plan { width: 100%; max-width: 316px; aspect-ratio: 316 / 150; justify-self: center; }
+#roomFields { display: grid; gap: 9px; }
+.op { display: grid; grid-template-columns: 30px 24px repeat(4, minmax(0, 1fr)) 14px; gap: 8px; align-items: end; }
+.op.blk { grid-template-columns: 54px repeat(4, minmax(0, 1fr)) 14px; }
+.op .nm { padding-bottom: 6px; white-space: nowrap; }
+.op button { padding: 3px 0 6px; }
+
+/* AI 탭 */
+.steps { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 12px; line-height: 1.6; letter-spacing: 0.02em; color: rgba(255, 255, 255, 0.7); }
+.steps b { font-weight: 400; color: #fff; }
+#aiList { display: grid; gap: 10px; }
+.say { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: start; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 3px; }
+.say .cap { grid-column: 1 / -1; }
+.say p { margin: 0; font-size: 12.5px; line-height: 1.6; letter-spacing: 0.02em; color: #fff; user-select: text; }
+.say button { font-size: 11.5px; color: rgba(255, 255, 255, 0.65); padding-top: 2px; }
+
+/* 처음 안내 */
+#help { inset: 0; display: grid; place-items: center; background: rgba(0, 0, 0, 0.42); text-shadow: none; }
+#help .card { width: min(520px, calc(100vw - 48px)); box-sizing: border-box; padding: 30px 34px 26px; display: grid; gap: 18px; }
+#help h1 { margin: 0; font: inherit; font-size: 18px; letter-spacing: 0.14em; color: #fff; }
+#help dl { margin: 0; display: grid; grid-template-columns: 76px 1fr; gap: 12px 14px; font-size: 13px; line-height: 1.7; letter-spacing: 0.02em; }
+#help dt { color: #fff; letter-spacing: 0.08em; }
+#help dd { margin: 0; color: rgba(255, 255, 255, 0.72); }
+#help b { font-weight: 400; color: #fff; }
+#help .solid { justify-self: end; }
+
+#msg { position: fixed; left: 28px; bottom: 96px; max-width: 60ch; font: 400 13px/1.6 "Malgun Gothic", system-ui, sans-serif; color: #ffd9c7; text-shadow: 0 1px 8px #000; }
+
+/* 방이 하나도 없을 때: 방 만들기만 남긴다 */
+body.noroom #dock, body.noroom #panel, body.noroom #hint { display: none; }
+
+/* 좁은 화면: 아래 조작을 두 줄로 쌓고, 꾸미기 패널은 그 위에 낮게 깐다 */
+@media (max-width: 900px) {
+  #hint { display: none; }
+  #top { left: 16px; top: 16px; } #helpBtn { right: 16px; top: 14px; }
+  #dock { left: 16px; right: 16px; bottom: 14px; flex-direction: column; align-items: stretch; gap: 10px; }
+  #dock .row { flex-wrap: wrap; gap: 8px 16px; }
+  #dock .cap em { display: none; }
+  #timeSlider { flex: 1 1 120px; width: auto; min-width: 100px; }
+  #viewGrp { justify-items: start; }
+  #viewGrp .row { width: 100%; justify-content: space-between; }
+  #panel { left: 10px; right: 10px; width: auto; top: auto; bottom: 196px; height: min(40vh, 340px); padding: 12px 14px 10px; }
+  #roomMenu { width: min(330px, calc(100vw - 32px)); box-sizing: border-box; }
+  #plan { width: 100%; max-width: 316px; }
+}
+@media (max-width: 900px) and (min-width: 620px) { #panel { bottom: 150px; } }
+@media (max-width: 900px) { #areas { max-width: none; justify-content: flex-start; } body.areas #panel { bottom: 232px; } }
+@media (max-width: 900px) and (min-width: 620px) { body.areas #panel { bottom: 186px; } }

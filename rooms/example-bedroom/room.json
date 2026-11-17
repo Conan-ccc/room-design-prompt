@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "name": "예시 침실",
+  "prompt": "input/설명.txt (예시)",
+  "assumptions": [
+    "방위: 창이 있는 벽을 남쪽(S)으로 가정. 문은 맞은편 북쪽(N) 벽",
+    "문·창이 '긴 벽'에 있다고 했으므로 긴 변 3.6m 를 동서(w), 짧은 변 3.3m 를 남북(d)으로 놓음. '가로·세로'가 어느 쪽인지는 설명만으로 정할 수 없음",
+    "문의 '오른쪽 끝'은 창을 보고 섰을 때(문에서 방 안을 볼 때)의 오른쪽 = 서쪽 끝으로 해석. 벽을 마주 보고 오른쪽이라면 동쪽 끝이 됨",
+    "문: 폭 0.9m·높이 2.1m, 서쪽 모서리에서 0.1m, 경첩은 모서리 쪽, 안으로 열림, 닫힌 상태. 전부 가정",
+    "창: 폭 2m 는 설명 그대로. 높이 1.4m, 창대 높이 0.8m, 벽 가운데는 가정",
+    "커튼이 40%쯤 걷힌 상태로 가정",
+    "침대: 퀸 1.5×2.05m, 높이 0.45m, 프레임·침구 색은 가정",
+    "협탁 0.45×0.4×0.5m 두 개, 색은 가정. 스탠드는 창 쪽 협탁에 놓았다고 가정",
+    "옷장: 폭 1.8m 는 설명 그대로. 깊이 0.6m·높이 2.3m·문 4짝은 가정. 문이 열리는 자리(북쪽 0.95m)를 비우고 그 바로 남쪽에 붙임",
+    "화분: 창 쪽(남서) 구석, 크기 0.45×0.45×1.2m 가정",
+    "러그: 1.8×1.2m 가정. 침대 발치와 옷장 사이가 0.95m 라 침대 밑으로 일부 들어감",
+    "천장등 하나(가운데, 따뜻한 색)는 설명에 없어 가정",
+    "창밖 풍경(도시, 높이 12m)은 가정"
+  ],
+  "style": "warm-vintage",
+  "environment": {
+    "time": "night",
+    "view": "city",
+    "elevation": 12
+  },
+  "room": {
+    "w": 3.6,
+    "d": 3.3,
+    "h": 2.4,
+    "floor": "walnut-plank",
+    "wall": {
+      "type": "wallpaper",
+      "color": "#dcc8a8"
+    },
+    "ceiling": "@ceiling"
+  },
+  "openings": [
+    {
+      "type": "door",
+      "wall": "N",
+      "offset": 0.1,
+      "width": 0.9,
+      "height": 2.1,
+      "hinge": "start",
+      "swing": "in",
+      "open": 0
+    },
+    {
+      "type": "window",
+      "wall": "S",
+      "offset": 0.8,
+      "width": 2.0,
+      "height": 1.4,
+      "sill": 0.8,
+      "curtain": "sheer",
+      "curtainColor": {
+        "type": "fabric",
+        "color": "#f5f3ee"
+      },
+      "curtainOpen": 0.4
+    }
+  ],
+  "furniture": [
+    {
+      "type": "bed",
+      "x": 2.565,
+      "z": 1.65,
+      "facing": "W",
+      "w": 1.5,
+      "d": 2.05,
+      "h": 0.45,
+      "assumed": true,
+      "note": "퀸. 머리를 동쪽 벽 가운데에. x = 3.6 - 2.05/2 - 0.01, z = 3.3/2. 치수 가정"
+    },
+    {
+      "type": "nightstand",
+      "x": 3.39,
+      "z": 0.645,
+      "facing": "W",
+      "assumed": true,
+      "note": "문 쪽 협탁. z = 1.65 - 0.75 - 0.03 - 0.225"
+    },
+    {
+      "type": "nightstand",
+      "x": 3.39,
+      "z": 2.655,
+      "facing": "W",
+      "assumed": true,
+      "note": "창 쪽 협탁. z = 1.65 + 0.75 + 0.03 + 0.225"
+    },
+    {
+      "type": "table-lamp",
+      "x": 3.39,
+      "z": 2.655,
+      "y": 0.5,
+      "facing": "W",
+      "options": {
+        "temp": 2700
+      },
+      "assumed": true,
+      "note": "창 쪽 협탁 위 스탠드. 어느 협탁인지는 가정"
+    },
+    {
+      "type": "wardrobe",
+      "x": 0.31,
+      "z": 1.85,
+      "facing": "E",
+      "w": 1.8,
+      "d": 0.6,
+      "h": 2.3,
+      "material": "white-laminate",
+      "options": {
+        "doors": 4
+      },
+      "assumed": true,
+      "note": "흰 옷장 폭 1.8. 서쪽 벽, z 0.95~2.75 (문 열리는 자리 0.95 다음부터). 깊이·높이 가정"
+    },
+    {
+      "type": "plant",
+      "x": 0.3,
+      "z": 3.0,
+      "facing": "E",
+      "assumed": true,
+      "note": "창 쪽(남서) 구석 화분"
+    },
+    {
+      "type": "rug",
+      "x": 1.25,
+      "z": 1.65,
+      "facing": "W",
+      "w": 1.8,
+      "d": 1.2,
+      "material": "gray-carpet",
+      "assumed": true,
+      "note": "침대 발치 회색 러그. x 0.65~1.85, 침대 밑으로 0.3 들어감. 크기 가정"
+    }
+  ],
+  "lights": [
+    {
+      "type": "ceiling",
+      "x": 1.8,
+      "z": 1.65,
+      "temp": 3000,
+      "power": 0.6,
+      "on": "auto",
+      "assumed": true
+    }
+  ],
+  "start": {
+    "x": 0.75,
+    "z": 0.5,
+    "yaw": 125,
+    "pitch": -8
+  },
+  "views": [
+    {
+      "name": "bed",
+      "x": 0.95,
+      "z": 2.6,
+      "yaw": 68,
+      "pitch": -12
+    },
+    {
+      "name": "wardrobe",
+      "x": 3.0,
+      "z": 2.55,
+      "yaw": 285,
+      "pitch": -12
+    },
+    {
+      "name": "window",
+      "x": 1.8,
+      "z": 0.4,
+      "yaw": 180,
+      "pitch": -4
+    }
+  ]
+}

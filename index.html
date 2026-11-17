@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>방</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/build/three.module.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+</head>
+<body>
+
+<!-- 왼쪽 위: 방 이름(누르면 방 바꾸기·새 방) -->
+<div id="top" class="ui">
+  <button id="name" title="다른 방 열기 · 새 방 만들기"></button><span id="saved"></span>
+  <div id="roomMenu" class="card" hidden>
+    <div class="cap">방 바꾸기</div>
+    <div id="roomList"></div>
+    <div class="cap">새 방 만들기 <em>가로·세로만 적으면 나머지는 흔한 값으로 채워</em></div>
+    <div id="newRow">
+      <input id="newRoom" type="text" placeholder="이름" spellcheck="false"><input id="newW" type="number" min="100" max="1500" placeholder="가로 cm"><input id="newD" type="number" min="100" max="1500" placeholder="세로 cm"><button id="newGo" class="solid">만들기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 가운데 위: 지금 할 수 있는 조작 -->
+<div id="hint" class="ui"></div>
+<button id="helpBtn" class="ui" title="처음 안내 다시 보기">도움말</button>
+
+<!-- 아래: 시간(왼쪽) · 보기와 꾸미기(오른쪽) -->
+<div id="dock" class="ui">
+  <div class="grp" id="timeGrp">
+    <span class="cap">시간 <em>움직이면 햇빛이 바뀌어</em></span>
+    <div class="row">
+      <span id="chips" class="seg"><button data-h="8">아침</button><button data-h="12.5">낮</button><button data-h="17.75">노을</button><button data-h="21.5">밤</button></span>
+      <input id="time" type="text" inputmode="numeric" maxlength="5" spellcheck="false" title="시각을 직접 적기 (예: 17:30)">
+      <input id="timeSlider" type="range" min="0" max="24" step="0.0833333" title="끌어서 시간 바꾸기">
+      <span id="seasons" class="seg" title="계절에 따라 해 높이와 방향이 달라져"><button data-s="spring">봄·가을</button><button data-s="summer">여름</button><button data-s="winter">겨울</button></span>
+    </div>
+  </div>
+  <div class="grp" id="viewGrp">
+    <div id="areaRow" class="row" hidden><span class="cap">방으로 가기</span><span id="areas" class="seg"></span></div>
+    <span class="cap">보기</span>
+    <div class="row">
+      <span id="views" class="seg"><button data-v="walk">안에서</button><button data-v="overview">위에서</button></span>
+      <button id="decor" class="solid" title="가구·조명을 옮기고 방 치수를 바꾸기 (E)">꾸미기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 오른쪽: 꾸미기 패널 -->
+<aside id="panel" class="ui card" hidden>
+  <nav id="tabs" class="seg"><button data-tab="furn">가구</button><button data-tab="light">조명</button><button data-tab="room">방</button><button data-tab="ai">AI로 만들기</button><button id="closePanel" title="닫기 (E)">×</button></nav>
+
+  <section id="tab-furn">
+    <div id="furnSel"></div>
+    <div class="cap">가구 추가</div>
+    <div id="addRow"><select id="addType"></select><button id="addFurn" class="solid">추가</button></div>
+    <div class="cap">이 방의 가구 <em>눌러서 고르기</em></div>
+    <div id="furnList"></div>
+  </section>
+
+  <section id="tab-light">
+    <div id="curtainRow" class="slide"><span>커튼 걷기</span><input id="curtain" type="range" min="0" max="1" step="0.02"><output id="curtainOut"></output><button id="curtainOff" class="rm" title="커튼 떼기">×</button></div>
+    <button id="curtainAdd" hidden title="창에 얇은 커튼을 달아. 단 뒤에 걷는 정도를 조절할 수 있어">+ 커튼 달기</button>
+    <div class="cap">조명 <em>숫자를 고치면 바로 바뀌어</em></div>
+    <div class="light head"><span></span><span>밝기</span><span></span><span>색온도</span><span></span><span>색</span><span>켜짐</span><span></span></div>
+    <div id="lightList"></div>
+    <div class="cap">조명 추가 <em>추가한 뒤 끌어서 자리 잡기</em></div>
+    <div id="adds"><button data-add="ceiling">+ 천장등</button><button data-add="stand">+ 스탠드</button><button data-add="point">+ 전구</button></div>
+    <p class="note">자동은 해가 지면 켜져. 밝기는 제품 상자의 루멘(lm) 값을 그대로 적으면 돼.</p>
+  </section>
+
+  <section id="tab-room">
+    <canvas id="plan"></canvas>
+    <div id="roomFields"></div>
+    <div id="roomAdds"><button id="addDoor">+ 문</button><button id="addWin">+ 창</button><button id="addBlock" title="기둥이나 꺾인 벽. ㄱ자 방을 만들 때">+ 기둥·꺾인 벽</button><em>단위 cm</em></div>
+    <div class="cap">마감 분위기</div>
+    <div id="styles" class="seg"></div>
+    <div class="cap">화면 품질 <em>느리면 낮음</em></div>
+    <div id="qualities" class="seg"><button data-q="low">낮음</button><button data-q="mid">보통</button><button data-q="high">높음</button></div>
+  </section>
+
+  <section id="tab-ai">
+    <ol class="steps">
+      <li>이 프로그램 폴더에서 내 AI(Claude Code, Codex, Gemini CLI 등)를 열어.</li>
+      <li>방 사진이나 제품 사진이 있으면 <b>input/사진</b> 폴더에 넣어.</li>
+      <li>아래 문장을 복사해 AI에게 보내. AI가 이 방을 고치면 화면이 저절로 바뀌고, 새 방을 만들면 왼쪽 위 방 목록에 떠.</li>
+    </ol>
+    <div id="aiList"></div>
+  </section>
+
+  <footer><button id="undo" title="Ctrl+Z">되돌리기</button><span id="selInfo"></span></footer>
+</aside>
+
+<!-- 처음 안내 -->
+<div id="help" class="ui" hidden>
+  <div class="card">
+    <h1>방을 둘러보고, 바꿔 봐</h1>
+    <dl>
+      <dt>둘러보기</dt><dd>화면을 끌면 고개가 돌아가. <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>나 바닥 더블클릭으로 걸어가고, <b>위에서</b>를 누르면 방 전체가 보여.</dd>
+      <dt>햇빛</dt><dd>아래 <b>시간</b> 게이지를 움직이면 그 시각의 채광으로 바뀌어. 계절도 고를 수 있어.</dd>
+      <dt>꾸미기</dt><dd>오른쪽 아래 <b>꾸미기</b>를 켜면 가구와 조명을 눌러서 끌어 옮기고, 추가하고, 방 치수를 고칠 수 있어.</dd>
+      <dt>AI로 만들기</dt><dd>방 사진이나 가구 링크로 만들고 싶으면 꾸미기의 <b>AI로 만들기</b> 탭에 있는 문장을 내 AI에게 보내.</dd>
+      <dt>단축키</dt><dd><kbd>E</kbd> 꾸미기 · <kbd>O</kbd> 안에서/위에서 · <kbd>1</kbd>~<kbd>4</kbd> 아침·낮·노을·밤 · <kbd>H</kbd> 글자 숨기기(다시 <kbd>H</kbd>나 <kbd>Esc</kbd>)</dd>
+    </dl>
+    <button id="helpGo" class="solid">시작하기</button>
+  </div>
+</div>
+
+<div id="msg" hidden></div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
